@@ -2,10 +2,13 @@ import { test, expect } from "@playwright/test";
 import { LoginPage } from "../page-objects/loginPage";
 import { InventoryPage } from "../page-objects/inventoryPage";
 
+test.use({
+  ignoreHTTPSErrors: true,
+});
+
 //positive login case
 test("Login with valid credentials", async ({ page }) => {
   const loginPage = new LoginPage(page);
-
   await loginPage.goto();
   await loginPage.getEmailField.pressSequentially("standard_user");
   await loginPage.getPasswordField.pressSequentially("secret_sauce");
@@ -56,4 +59,43 @@ test("Verify inventory page elements", async ({ page }) => {
   //verify Shopping Cart button
   await inventoryPage.getShopingCartButton.click();
   expect(page.url()).toBe("https://www.saucedemo.com/cart.html");
+});
+
+//verify burger button case
+test("burger button", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
+
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getPasswordField.pressSequentially("secret_sauce");
+  await loginPage.getSubmitLoginButton.click();
+
+  expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
+
+  await inventoryPage.getBurgerButton.click();
+
+  const allItemsButton = await inventoryPage.getAllItemsButton.textContent();
+  const aboutButton = await inventoryPage.getAboutButton.textContent();
+  const logoutButton = await inventoryPage.getLogoutButton.textContent();
+  const resetAppStateButton =
+    await inventoryPage.getResetAppState.textContent();
+});
+
+//log out case
+test("Log out", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
+
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getPasswordField.pressSequentially("secret_sauce");
+  await loginPage.getSubmitLoginButton.click();
+
+  expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
+
+  await inventoryPage.getBurgerButton.click();
+  await inventoryPage.getLogoutButton.click();
+
+  expect(page.url()).toBe("https://www.saucedemo.com/");
 });

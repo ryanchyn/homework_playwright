@@ -8,6 +8,12 @@ export class InventoryPage {
   readonly getShopingCartButton: Locator;
   readonly getAddToCartButton: Locator;
 
+  readonly getBurgerButton: Locator;
+  readonly getAllItemsButton: Locator;
+  readonly getAboutButton: Locator;
+  readonly getLogoutButton: Locator;
+  readonly getResetAppState: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
@@ -23,9 +29,23 @@ export class InventoryPage {
     this.getShopingCartButton = page.locator(
       "xpath=//*[@id='shopping_cart_container']/a"
     );
-    this.getMenuButton = page.locator("xpath=//*[@id='react-burger-menu-btn']");
     this.getAddToCartButton = page.locator(
       "xpath=//*[@id='add-to-cart-sauce-labs-backpack']"
+    );
+    this.getBurgerButton = page.locator(
+      "xpath=/html//button[@id='react-burger-menu-btn']"
+    );
+    this.getAllItemsButton = page.locator(
+      "xpath=/html//a[@id='inventory_sidebar_link']"
+    );
+    this.getAboutButton = page.locator(
+      "xpath=/html//a[@id='about_sidebar_link']"
+    );
+    this.getLogoutButton = page.locator(
+      "xpath=/html//a[@id='logout_sidebar_link']"
+    );
+    this.getResetAppState = page.locator(
+      "xpath=/html//a[@id='reset_sidebar_link']"
     );
   }
 }
