@@ -1,58 +1,101 @@
 import { test, expect } from "@playwright/test";
+import { LoginPage } from "../page-objects/loginPage";
+import { InventoryPage } from "../page-objects/inventoryPage";
+
+test.use({
+  ignoreHTTPSErrors: true,
+});
 
 //positive login case
 test("Login with valid credentials", async ({ page }) => {
-  await page.goto("https://www.saucedemo.com/");
-
-  await page.fill('//*[@id="user-name"]', "standard_user");
-  await page.fill('//*[@id="password"]', "secret_sauce");
-
-  await page.click('//*[@id="login-button"]');
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getPasswordField.pressSequentially("secret_sauce");
+  await loginPage.getSubmitLoginButton.click();
 
   expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
 });
 
 //negative login case
 test("Login with invalid credentials", async ({ page }) => {
-  await page.goto("https://www.saucedemo.com/");
+  const loginPage = new LoginPage(page);
 
-  await page.fill('//*[@id="user-name"]', "invalid_username");
-  await page.fill('//*[@id="password"]', "invalid_password");
-
-  await page.click('//*[@id="login-button"]');
-
-  await page.waitForSelector(
-    '//*[@id="login_button_container"]/div/form/div[3]/h3'
-  );
-  const errorMessage = await page.textContent(
-    '//*[@id="login_button_container"]/div/form/div[3]/h3'
-  );
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("incorect_username");
+  await loginPage.getPasswordField.pressSequentially("incorect_password");
+  await loginPage.getSubmitLoginButton.click();
+  const errorMessage = await loginPage.getIncorrectErrorText.textContent();
   expect(errorMessage).toContain(
     "Epic sadface: Username and password do not match any user in this service"
   );
 });
 
-//#header_container > div.primary_header > div.header_label > div
-
 //verify inventory page elements
 test("Verify inventory page elements", async ({ page }) => {
-  //login
-  await page.goto("https://www.saucedemo.com/");
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
 
-  await page.fill('//*[@id="user-name"]', "standard_user");
-  await page.fill('//*[@id="password"]', "secret_sauce");
-
-  await page.click('//*[@id="login-button"]');
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getPasswordField.pressSequentially("secret_sauce");
+  await loginPage.getSubmitLoginButton.click();
 
   expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
 
   //verify logo text
-  const logoText = await page.textContent("#header_container");
+  const logoText = await inventoryPage.getLogoText.textContent();
   expect(logoText).toContain("Swag Labs");
 
   //verify footer text
-  const footerText = await page.textContent("#page_wrapper");
+  const footerText = await inventoryPage.getFooterText.textContent();
   expect(footerText).toContain(
     " Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy"
   );
+
+  //verify filter dropdown
+  await inventoryPage.getFiltersDropdown.isVisible();
+
+  //verify Shopping Cart button
+  await inventoryPage.getShopingCartButton.click();
+  expect(page.url()).toBe("https://www.saucedemo.com/cart.html");
+});
+
+//verify burger button case
+test("burger button", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
+
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getPasswordField.pressSequentially("secret_sauce");
+  await loginPage.getSubmitLoginButton.click();
+
+  expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
+
+  await inventoryPage.getBurgerButton.click();
+
+  const allItemsButton = await inventoryPage.getAllItemsButton.textContent();
+  const aboutButton = await inventoryPage.getAboutButton.textContent();
+  const logoutButton = await inventoryPage.getLogoutButton.textContent();
+  const resetAppStateButton =
+    await inventoryPage.getResetAppState.textContent();
+});
+
+//log out case
+test("Log out", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const inventoryPage = new InventoryPage(page);
+
+  await loginPage.goto();
+  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getPasswordField.pressSequentially("secret_sauce");
+  await loginPage.getSubmitLoginButton.click();
+
+  expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
+
+  await inventoryPage.getBurgerButton.click();
+  await inventoryPage.getLogoutButton.click();
+
+  expect(page.url()).toBe("https://www.saucedemo.com/");
 });
