@@ -4,7 +4,7 @@ on:
     branches: [main, master]
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 1
     runs-on: mcr.microsoft.com/playwright
     steps:
       - name: Checkout code
