@@ -17,4 +17,4 @@ RUN npm i
 #RUN npx playwright install
 
 # Run tests (This can be modified as needed)
-CMD ["npx", "playwright", "test"]
+CMD ["npx", "playwright", "test", "testAPiCrud.spec.ts"]
