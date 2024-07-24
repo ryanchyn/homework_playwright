@@ -7,6 +7,7 @@ export class LoginPage {
   readonly getPasswordField: Locator;
   readonly getSubmitLoginButton: Locator;
   readonly getIncorrectErrorText: Locator;
+  readonly getIncorectInventoryLinkText: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,6 +16,9 @@ export class LoginPage {
     this.getPasswordField = page.locator("xpath=//*[@id='password']");
     this.getSubmitLoginButton = page.locator("xpath=//*[@id='login-button']");
     this.getIncorrectErrorText = page.locator("xpath=//h3[@data-test='error']");
+    this.getIncorectInventoryLinkText = page.locator(
+      "xpath=//div[@id='login_button_container']//form//h3"
+    );
   }
 
   async goto() {
