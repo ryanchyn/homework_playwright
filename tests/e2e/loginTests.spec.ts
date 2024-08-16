@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../page-objects/loginPage";
-import { InventoryPage } from "../page-objects/inventoryPage";
+import { LoginPage } from "../../page-objects/loginPage";
+import { InventoryPage } from "../../page-objects/inventoryPage";
 
 test.use({
   ignoreHTTPSErrors: true,
