@@ -7,10 +7,11 @@ test.use({
 });
 
 //positive login case
+
 test("Login with valid credentials", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.getEmailField.pressSequentially("standard_user");
+  await loginPage.getEmailField.pressSequentially("sandard_user");
   await loginPage.getPasswordField.pressSequentially("secret_sauce");
   await loginPage.getSubmitLoginButton.click();
 
