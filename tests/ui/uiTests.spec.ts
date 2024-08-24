@@ -11,10 +11,10 @@ test("Verify inventory page elements", async ({ page }) => {
   const loginPage = new LoginPage(page);
   const inventoryPage = new InventoryPage(page);
 
-  await loginPage.goto();
-  await loginPage.getEmailField.pressSequentially("standard_user");
-  await loginPage.getPasswordField.pressSequentially("secret_sauce");
-  await loginPage.getSubmitLoginButton.click();
+  await loginPage.navigateTo();
+  await loginPage.emailField.pressSequentially("standard_user");
+  await loginPage.passwordField.pressSequentially("secret_sauce");
+  await loginPage.submitLoginButton.click();
 
   expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
 
@@ -41,10 +41,10 @@ test("burger button", async ({ page }) => {
   const loginPage = new LoginPage(page);
   const inventoryPage = new InventoryPage(page);
 
-  await loginPage.goto();
-  await loginPage.getEmailField.pressSequentially("standard_user");
-  await loginPage.getPasswordField.pressSequentially("secret_sauce");
-  await loginPage.getSubmitLoginButton.click();
+  await loginPage.navigateTo();
+  await loginPage.emailField.pressSequentially("standard_user");
+  await loginPage.passwordField.pressSequentially("secret_sauce");
+  await loginPage.submitLoginButton.click();
 
   expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
 

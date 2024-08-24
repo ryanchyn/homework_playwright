@@ -12,7 +12,6 @@ test("create a user", async ({ request }) => {
   });
 
   const postResponseJson = await postResponse.json();
-  console.log("POST Response:", postResponseJson);
 
   expect(postResponse.status()).toBe(201);
   expect(postResponseJson["name"]).toBe("morpheus");
