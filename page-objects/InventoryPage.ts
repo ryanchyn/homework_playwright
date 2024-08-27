@@ -13,7 +13,9 @@ export class InventoryPage {
   readonly getAboutButton: Locator;
   readonly getLogoutButton: Locator;
   readonly getResetAppState: Locator;
-  readonly getProductItem: Locator;
+  readonly getProducts: Locator;
+
+  readonly getFilterOptions: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,21 +32,20 @@ export class InventoryPage {
     this.getAboutButton = page.locator("#about_sidebar_link");
     this.getLogoutButton = page.locator("#logout_sidebar_link");
     this.getResetAppState = page.locator("#reset_sidebar_link");
-    this.getProductItem = page.locator(".inventory_item_name");
+    this.getFilterOptions = page.locator(".product_sort_container option");
+    this.getProducts = page.locator(".inventory_item_description");
   }
 
-  async getFilterOptionTexts(): Promise<string[]> {
-    const optionTexts = await this.getFiltersDropdown
-      .locator("option")
-      .evaluateAll((options) =>
-        options.map((option) => option.textContent?.trim() || "")
-      );
-    return optionTexts;
+  async getFilterOptionsArr(): Promise<string[]> {
+    const filterOptionsAll = this.getFilterOptions.allTextContents();
+    return filterOptionsAll;
   }
 
   // Method to retrieve all product names
+
+  // Method to retrieve all product names
   async getProductNames(): Promise<string[]> {
-    const names = await this.getProductItem.allTextContents();
+    const names = await this.getProducts.allTextContents();
     return names.map((name) => name.trim());
   }
 }

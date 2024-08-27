@@ -29,7 +29,7 @@ test("register user", async ({ request }) => {
   expect(responseJson["user"]["_id"]).toBeDefined();
   expect(responseJson["token"]).toBeDefined();
 
-  console.log(accessToken);
+  //console.log(accessToken);
 });
 
 test("register and get user", async ({ request }) => {

@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../page-objects/loginPage";
 import { InventoryPage } from "../../page-objects/inventoryPage";
+import { log } from "console";
 
 test.use({
   ignoreHTTPSErrors: true,
@@ -26,8 +27,7 @@ test("Filter expanding", async ({ page }) => {
     "Price (high to low)",
   ];
 
-  // Get the filter option values
-  const filterOptionValues = await inventoryPage.getFilterOptionTexts();
+  const filterOptionValues = await inventoryPage.getFilterOptionsArr(); // Await the result of the async function
 
   // Assert that the retrieved values match the expected ones
   expect(filterOptionValues).toEqual(expectedValues);
@@ -46,10 +46,12 @@ test("Filter alphabet increase", async ({ page }) => {
   // Retrieve product names
   const productNames = await inventoryPage.getProductNames();
 
-  //console.log(productNames);
   // Sort the product names alphabetically
   const sortedNames = [...productNames].sort();
 
   // Verify the order is correct
   expect(productNames).toEqual(sortedNames);
+
+  const products = await inventoryPage.getProductNames();
+  console.log(products);
 });
