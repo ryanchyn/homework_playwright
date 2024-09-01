@@ -14,6 +14,7 @@ export class InventoryPage {
   readonly getLogoutButton: Locator;
   readonly getResetAppState: Locator;
   readonly getProducts: Locator;
+  readonly getInventoryItemName: Locator;
 
   readonly getFilterOptions: Locator;
 
@@ -34,6 +35,7 @@ export class InventoryPage {
     this.getResetAppState = page.locator("#reset_sidebar_link");
     this.getFilterOptions = page.locator(".product_sort_container option");
     this.getProducts = page.locator(".inventory_item_description");
+    this.getInventoryItemName = page.locator(".inventory_item_name");
   }
 
   async getFilterOptionsArr(): Promise<string[]> {

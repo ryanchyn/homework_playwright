@@ -21,7 +21,15 @@ export class LoginPage {
     );
   }
 
-  async navigateTo() {
+  async login(login: string, password: string) {
     await this.page.goto("https://www.saucedemo.com/");
+    await this.emailField.pressSequentially(login);
+    await this.passwordField.pressSequentially(password);
+    await this.submitLoginButton.click();
+  }
+
+  async assertLoginErrorMessage(expectedMessage: string) {
+    const errorMessage = await this.incorrectErrorText.textContent();
+    expect(errorMessage).toContain(expectedMessage);
   }
 }
