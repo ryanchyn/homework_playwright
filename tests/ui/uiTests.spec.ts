@@ -32,21 +32,3 @@ test("Verify inventory page elements", async ({ page }) => {
   await inventoryPage.getShopingCartButton.click();
   expect(page.url()).toBe("https://www.saucedemo.com/cart.html");
 });
-
-//verify burger button case
-test("burger button", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-
-  await loginPage.login("standard_user", "secret_sauce");
-
-  expect(page.url()).toBe("https://www.saucedemo.com/inventory.html");
-
-  await inventoryPage.getBurgerButton.click();
-
-  const allItemsButton = await inventoryPage.getAllItemsButton.textContent();
-  const aboutButton = await inventoryPage.getAboutButton.textContent();
-  const logoutButton = await inventoryPage.getLogoutButton.textContent();
-  const resetAppStateButton =
-    await inventoryPage.getResetAppState.textContent();
-});

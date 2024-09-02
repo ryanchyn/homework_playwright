@@ -8,15 +8,12 @@ export class InventoryPage {
   readonly getShopingCartButton: Locator;
   readonly getAddToCartButtons: Locator;
 
-  readonly getBurgerButton: Locator;
-  readonly getAllItemsButton: Locator;
-  readonly getAboutButton: Locator;
-  readonly getLogoutButton: Locator;
-  readonly getResetAppState: Locator;
   readonly getProducts: Locator;
   readonly getInventoryItemName: Locator;
-
   readonly getFilterOptions: Locator;
+  readonly twitterLink: Locator;
+  readonly linkedinLink: Locator;
+  readonly facebookLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,14 +25,13 @@ export class InventoryPage {
     this.getAddToCartButtons = page.locator(
       ".btn.btn_primary.btn_small.btn_inventory"
     );
-    this.getBurgerButton = page.locator("#react-burger-menu-btn");
-    this.getAllItemsButton = page.locator("#inventory_sidebar_link");
-    this.getAboutButton = page.locator("#about_sidebar_link");
-    this.getLogoutButton = page.locator("#logout_sidebar_link");
-    this.getResetAppState = page.locator("#reset_sidebar_link");
+
     this.getFilterOptions = page.locator(".product_sort_container option");
     this.getProducts = page.locator(".inventory_item_description");
     this.getInventoryItemName = page.locator(".inventory_item_name");
+    this.twitterLink = page.locator(".social_twitter");
+    this.linkedinLink = page.locator(".social_linkedin");
+    this.facebookLink = page.locator(".social_facebook");
   }
 
   async getFilterOptionsArr(): Promise<string[]> {

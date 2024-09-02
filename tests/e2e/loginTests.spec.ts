@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { LoginPage } from "../../page-objects/loginPage";
 import { InventoryPage } from "../../page-objects/inventoryPage";
+import { BurgerMenuPage } from "../../page-objects/BurgerMenuPage";
 
 test.use({ ignoreHTTPSErrors: true });
 
@@ -32,11 +33,12 @@ test.describe("Inventory Page Tests", () => {
   test("Log out", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
+    const burgerMenuPage = new BurgerMenuPage(page);
     await loginPage.login("standard_user", "secret_sauce");
     await expect(page).toHaveURL("https://www.saucedemo.com/inventory.html");
 
-    await inventoryPage.getBurgerButton.click();
-    await inventoryPage.getLogoutButton.click();
+    await burgerMenuPage.getBurgerButton.click();
+    await burgerMenuPage.getLogoutButton.click();
 
     await expect(page).toHaveURL("https://www.saucedemo.com/");
   });

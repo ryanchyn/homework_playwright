@@ -6,6 +6,55 @@ test.use({
   ignoreHTTPSErrors: true,
 });
 
+test.describe("Social Media links Tests", () => {
+  test("Verify twitter link", async ({ page, context }) => {
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+
+    await loginPage.login("standard_user", "secret_sauce");
+
+    const [newPage] = await Promise.all([
+      context.waitForEvent("page"), // Waits for a new tab or window to be opened
+      inventoryPage.twitterLink.click(), // Trigger the click that opens the new tab
+    ]);
+    await newPage.waitForLoadState();
+    await expect(newPage).toHaveURL("https://x.com/saucelabs");
+    await newPage.close();
+  });
+
+  test("Verify facebook link", async ({ page, context }) => {
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+
+    await loginPage.login("standard_user", "secret_sauce");
+
+    const [newPage] = await Promise.all([
+      context.waitForEvent("page"), // Waits for a new tab or window to be opened
+      inventoryPage.facebookLink.click(), // Trigger the click that opens the new tab
+    ]);
+    await newPage.waitForLoadState();
+    await expect(newPage).toHaveURL("https://www.facebook.com/saucelabs");
+    await newPage.close();
+  });
+
+  test("Verify linkedin link", async ({ page, context }) => {
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+
+    await loginPage.login("standard_user", "secret_sauce");
+
+    const [newPage] = await Promise.all([
+      context.waitForEvent("page"), // Waits for a new tab or window to be opened
+      inventoryPage.linkedinLink.click(), // Trigger the click that opens the new tab
+    ]);
+    await newPage.waitForLoadState();
+    await expect(newPage).toHaveURL(
+      "https://www.linkedin.com/company/sauce-labs/"
+    );
+    await newPage.close();
+  });
+});
+
 test("Verify filter dropdown expands on click", async ({ page }) => {
   const loginPage = new LoginPage(page);
   const inventoryPage = new InventoryPage(page);
