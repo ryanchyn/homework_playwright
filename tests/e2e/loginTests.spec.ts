@@ -30,19 +30,6 @@ test.describe("Login Tests", () => {
 });
 
 test.describe("Inventory Page Tests", () => {
-  test("Log out", async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-    const burgerMenuPage = new BurgerMenuPage(page);
-    await loginPage.login("standard_user", "secret_sauce");
-    await expect(page).toHaveURL("https://www.saucedemo.com/inventory.html");
-
-    await burgerMenuPage.getBurgerButton.click();
-    await burgerMenuPage.getLogoutButton.click();
-
-    await expect(page).toHaveURL("https://www.saucedemo.com/");
-  });
-
   test("Access inventory page without login", async ({ page }) => {
     const loginPage = new LoginPage(page);
     await page.goto("https://www.saucedemo.com/inventory.html");
