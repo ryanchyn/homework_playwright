@@ -1,79 +1,76 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../page-objects/loginPage";
-import { InventoryPage } from "../../page-objects/inventoryPage";
-import { ItemPage } from "../../page-objects/ItemPage";
+import { PageManager } from "../../page-objects/PageManager";
 
-test.use({
-  ignoreHTTPSErrors: true,
-});
+test.use({ ignoreHTTPSErrors: true });
 
-test("Details page", async ({ page }) => {
-  const loginPage = new LoginPage(page);
+test.describe("Inventory Item Tests", () => {
+  test("Should navigate to item details page", async ({ page }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-  await loginPage.login("standard_user", "secret_sauce");
+    await pm.getInventoryPage().getInventoryItemName.first().click();
+    expect(page.url()).toContain("inventory-item");
+  });
 
-  const inventoryPage = new InventoryPage(page);
-  await inventoryPage.getInventoryItemName.first().click();
-  expect(page.url()).toContain("inventory-item");
-});
+  test("Should verify content on item details page", async ({ page }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-test("Content test", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const itemPage = new ItemPage(page);
+    await pm.getInventoryPage().getInventoryItemName.first().click();
 
-  await loginPage.login("standard_user", "secret_sauce");
+    const itemName = await pm.getItemPage().itemName.textContent();
+    const buttonText = await pm.getItemPage().button_addToCard.textContent();
+    const itemPrice = await pm.getItemPage().itemPrice.textContent();
 
-  await inventoryPage.getInventoryItemName.first().click();
+    expect(itemName).toContain("Sauce Labs Backpack");
+    expect(buttonText).toContain("Add to cart");
+    expect(itemPrice).toContain("$29.99");
+  });
 
-  const itemName = await itemPage.itemName.textContent();
-  const buttonText = await itemPage.button_addToCard.textContent();
-  const itemPrice = await itemPage.itemPrice.textContent();
+  test("Should navigate back to product list from item details page", async ({
+    page,
+  }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-  expect(itemName).toContain("Sauce Labs Backpack");
-  expect(buttonText).toContain("Add to cart");
-  expect(itemPrice).toContain("$29.99");
-});
+    await pm.getInventoryPage().getInventoryItemName.first().click();
+    await pm.getItemPage().button_backToProducts.click();
 
-test("Back to product - button", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const itemPage = new ItemPage(page);
+    await expect(page).toHaveURL("https://www.saucedemo.com/inventory.html");
+  });
 
-  await loginPage.login("standard_user", "secret_sauce");
-  await inventoryPage.getInventoryItemName.first().click();
-  await itemPage.button_backToProducts.click();
-  await expect(page).toHaveURL("https://www.saucedemo.com/inventory.html");
-});
+  test("Should add item to cart and verify cart count", async ({ page }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-test("Add to cart - button", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const itemPage = new ItemPage(page);
+    await pm.getInventoryPage().getInventoryItemName.first().click();
+    await pm.getItemPage().button_addToCard.click();
 
-  await loginPage.login("standard_user", "secret_sauce");
-  await inventoryPage.getInventoryItemName.first().click();
-  await itemPage.button_addToCard.click();
-  const buttonText = await itemPage.button_remove.textContent();
-  const cartIconCount = await itemPage.button_shopingCartLink.textContent();
+    const buttonText = await pm.getItemPage().button_remove.textContent();
+    const cartIconCount = await pm
+      .getItemPage()
+      .button_shopingCartLink.textContent();
 
-  expect(buttonText).toContain("Remove");
-  expect(cartIconCount).toContain("1");
-});
+    expect(buttonText).toContain("Remove");
+    expect(cartIconCount).toContain("1");
+  });
 
-test("Remove - button", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
-  const itemPage = new ItemPage(page);
+  test("Should remove item from cart and verify cart count", async ({
+    page,
+  }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-  await loginPage.login("standard_user", "secret_sauce");
-  await inventoryPage.getInventoryItemName.first().click();
-  await itemPage.button_addToCard.click();
-  await itemPage.button_remove.click();
+    await pm.getInventoryPage().getInventoryItemName.first().click();
+    await pm.getItemPage().button_addToCard.click();
+    await pm.getItemPage().button_remove.click();
 
-  const buttonText = await itemPage.button_addToCard.textContent();
-  const cartIconCount = await itemPage.button_shopingCartLink.textContent();
+    const buttonText = await pm.getItemPage().button_addToCard.textContent();
+    const cartIconCount = await pm
+      .getItemPage()
+      .button_shopingCartLink.textContent();
 
-  expect(buttonText).toContain("Add to cart");
-  expect(cartIconCount).toContain("");
+    expect(buttonText).toContain("Add to cart");
+    expect(cartIconCount).toContain("");
+  });
 });

@@ -1,51 +1,44 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../page-objects/loginPage";
-import { InventoryPage } from "../../page-objects/inventoryPage";
+import { PageManager } from "../../page-objects/PageManager";
 
 test.use({
   ignoreHTTPSErrors: true,
 });
 
-test.describe("Social Media links Tests", () => {
-  test("Verify twitter link", async ({ page, context }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    await loginPage.login("standard_user", "secret_sauce");
+test.describe("Social Media Links Tests", () => {
+  test("Verify Twitter link", async ({ page, context }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page"), // Waits for a new tab or window to be opened
-      inventoryPage.twitterLink.click(), // Trigger the click that opens the new tab
+      pm.getInventoryPage().twitterLink.click(), // Trigger the click that opens the new tab
     ]);
     await newPage.waitForLoadState();
     await expect(newPage).toHaveURL("https://x.com/saucelabs");
     await newPage.close();
   });
 
-  test("Verify facebook link", async ({ page, context }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    await loginPage.login("standard_user", "secret_sauce");
+  test("Verify Facebook link", async ({ page, context }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page"), // Waits for a new tab or window to be opened
-      inventoryPage.facebookLink.click(), // Trigger the click that opens the new tab
+      pm.getInventoryPage().facebookLink.click(), // Trigger the click that opens the new tab
     ]);
     await newPage.waitForLoadState();
     await expect(newPage).toHaveURL("https://www.facebook.com/saucelabs");
     await newPage.close();
   });
 
-  test("Verify linkedin link", async ({ page, context }) => {
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
-
-    await loginPage.login("standard_user", "secret_sauce");
+  test("Verify LinkedIn link", async ({ page, context }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page"), // Waits for a new tab or window to be opened
-      inventoryPage.linkedinLink.click(), // Trigger the click that opens the new tab
+      pm.getInventoryPage().linkedinLink.click(), // Trigger the click that opens the new tab
     ]);
     await newPage.waitForLoadState();
     await expect(newPage).toHaveURL(
@@ -55,37 +48,38 @@ test.describe("Social Media links Tests", () => {
   });
 });
 
-test("Verify filter dropdown expands on click", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
+test.describe("Inventory Page Tests", () => {
+  test("Verify filter dropdown expands on click", async ({ page }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-  await loginPage.login("standard_user", "secret_sauce");
+    await expect(pm.getInventoryPage().getFiltersDropdown).toBeVisible();
+    await pm.getInventoryPage().getFiltersDropdown.click();
 
-  await expect(inventoryPage.getFiltersDropdown).toBeVisible();
-  await inventoryPage.getFiltersDropdown.click();
+    const expectedValues = [
+      "Name (A to Z)",
+      "Name (Z to A)",
+      "Price (low to high)",
+      "Price (high to low)",
+    ];
 
-  const expectedValues = [
-    "Name (A to Z)",
-    "Name (Z to A)",
-    "Price (low to high)",
-    "Price (high to low)",
-  ];
+    const filterOptionValues = await pm
+      .getInventoryPage()
+      .getFilterOptionsArr();
+    expect(filterOptionValues).toEqual(expectedValues);
+  });
 
-  const filterOptionValues = await inventoryPage.getFilterOptionsArr();
+  test("Verify products are sorted alphabetically (A to Z)", async ({
+    page,
+  }) => {
+    const pm = new PageManager(page);
+    await pm.getLoginPage().login("standard_user", "secret_sauce");
 
-  expect(filterOptionValues).toEqual(expectedValues);
-});
+    const productNames = await pm.getInventoryPage().getProductNames();
 
-test("Verify products are sorted alphabetically (A to Z)", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const inventoryPage = new InventoryPage(page);
+    // Sort the product names alphabetically
+    const sortedNames = [...productNames].sort();
 
-  await loginPage.login("standard_user", "secret_sauce");
-
-  const productNames = await inventoryPage.getProductNames();
-
-  // Sort the product names alphabetically
-  const sortedNames = [...productNames].sort();
-
-  expect(productNames).toEqual(sortedNames);
+    expect(productNames).toEqual(sortedNames);
+  });
 });
